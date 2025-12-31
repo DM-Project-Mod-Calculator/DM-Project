@@ -103,9 +103,38 @@ long long linearCongruence(long long a, long long b, long long m){
     return (b*inv)%m;
 }
 
+/*
+=> Reference to learn: https://brilliant.org/wiki/chinese-remainder-theorem/
+*/
+void chineseRemainderTheorem(long long equations[][2], long long &x, long long &M, int k){
+    M = 1;
+    x = 0;
+    long long y, z;
+    for (int i = 0; i < k; i++)
+    {
+        M *= equations[i][1];
+        if(i<k-1 && gcd(equations[i][1],equations[i+1][1])!=1){ // => CRT could not apply as mods are not relatively co-prime.
+            x = -1;
+            M = -1;
+            return;
+        }
+    }
+    for (int i = 0; i < k; i++)
+    {
+        y = M/equations[i][1];
+        z = modInverse(y,equations[i][1]);
+        x += (equations[i][0]*y*z);
+    }
+    x %= M;
+    if (x < 0) x += M;
+}
+
 
 
 int main() {
-    // testing will be done here
+    long long m,x;
+    long long equations[][2] = {{65,99},{2,98},{51,97},{10,95}};
+    chineseRemainderTheorem(equations,x,m,4);
+    cout<<x<<" mod "<<m<<endl;
     return 0;
 }
